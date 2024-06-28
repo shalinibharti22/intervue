@@ -1,9 +1,64 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import { ProgressBar } from "react-bootstrap";
+import {getVariant} from "../utils/util"
 
-const PollingResult = () => {
+import tower from "../assets/tower-icon.png";
+
+const PollingResult = ({ socket }) => {
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+
+  const handleNewQuestion = (question) => {
+    setCurrentQuestion(question);
+  };
+  useEffect(() => {
+    socket.on("new-question", handleNewQuestion);
+
+    return () => {
+      socket.off("new-question", handleNewQuestion);
+    };
+  }, [socket]);
+
   return (
-    <div>PollingResult</div>
-  )
-}
+    <div
+      className="border border-[#6edff6] bg-[#134652] mb-12"
+    >
+      <h2 className="text-center items-center"
+      >
+        <img
+          src={tower}
+          alt=""
+          width="20px"
+          height="20px"
+          className="mr-5"
+        />
+        Live Results
+      </h2>
+      <div
+        className="gap-y-4 gap-x-4 border-t border-[#6edff6] w-full"
+      >
+        {currentQuestion &&
+          Object.entries(currentQuestion.optionsFrequency).map(([option]) => (
+            <div
+              className="m-4"
+            >
+              <ProgressBar
+                now={parseInt(currentQuestion.results[option] ?? 0) ?? "0"}
+                label={`${option}              ${parseInt(
+                  currentQuestion.results[option]
+                )}%`}
+                variant={getVariant(
+                  parseInt(currentQuestion.results[option] ?? 0)
+                )}
+                animated={
+                  getVariant(parseInt(currentQuestion.results[option] ?? 0)) !=
+                  "success"
+                }
+              />
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
 
-export default PollingResult
+export default PollingResult;

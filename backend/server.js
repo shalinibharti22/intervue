@@ -1,7 +1,8 @@
+
 const express = require("express");
 const app = express();
 const http = require("http");
-const {Server} = require("socket.io");
+const { Server } = require("socket.io");
 const cors = require("cors");
 
 app.use(cors());
@@ -9,91 +10,90 @@ app.use(cors());
 const server = http.createServer(app);
 
 const io = new Server(server, {
-    cors:{
-        origin: "http://localhost:3000",
-        methods: ["GET", "POST"]
-    }
-})
+  cors: {
+    origin: "http://localhost:3001",
+    methods: ["GET", "POST"],
+  },
+});
 
-
-server.listen(3000, () => {
-    console.log("server is running on port 3000")
-})
+server.listen(3001, () => {
+  console.log("server is running");
+});
 
 let currentQuestion = {};
 const connectedStudents = new Map();
 
 io.on("connection", (socket) => {
-    socket.on("teacher-question", (questionData) => {
-        const question = {
-            question: questionData.question,
-            options: questionData.question,
-            optonsFreq: {},
-            answered: false,
-            results: {}
+  socket.on("teacher-ask-question", (questionData) => {
+    const question = {
+      question: questionData.question,
+      options: questionData.options,
+      optionsFrequency: {},
+      answered: false,
+      results: {},
+    };
 
-        };
-
-        question.options.forEach((option) => {
-            question.optonsFreq[option] = 0;
-        });
-
-        currentQuestion = question;
-        
-        io.emit("new-question", question);
+    question.options.forEach((option) => {
+      question.optionsFrequency[option] = 0;
     });
 
-    socket.on("handle-polling", ({option}) => {
-        if(currentQuestion && currentQuestion.options?.includes(option)){
-            if(currentQuestion.optonsFreq[option]){
-                currentQuestion.optonsFreq[option] += 1;
-            }
-            else{
-                currentQuestion.optonsFreq[option] = 1;
-            }
+    currentQuestion = question;
 
-            const total = Object.values(
-                currentQuestion.optonsFreq
-            ).reduce((acc, ans) => acc + ans);
+    io.emit("new-question", question);
+  });
 
-            Object.keys(currentQuestion.optonsFreq).forEach((option) => {
-                const percentage = (currentQuestion.optonsFreq[option] / total) * 100;
-                currentQuestion.results[option] = percentage;
-            });
+  socket.on("handle-polling", ({ option }) => {
+    if (currentQuestion && currentQuestion.options?.includes(option)) {
+      if (currentQuestion.optionsFrequency[option]) {
+        currentQuestion.optionsFrequency[option] += 1;
+      } else {
+        currentQuestion.optionsFrequency[option] = 1;
+      }
 
-            currentQuestion.answered = true;
+      const totalResponses = Object.values(
+        currentQuestion.optionsFrequency
+      ).reduce((acc, ans) => acc + ans);
 
-            const student = connectedStudents.get(socket.id);
-            if(student){
-                student.voted = true;
-                connectedStudents.set(socket.id, student);
-                io.emit("student-vote-validation", [...connectedStudents.values()]);
-            }
+      Object.keys(currentQuestion.optionsFrequency).forEach((option) => {
+        const percentage =
+          (currentQuestion.optionsFrequency[option] / totalResponses) * 100;
+        currentQuestion.results[option] = percentage;
+      });
 
-            io.emit("new-question", currentQuestion);
+      currentQuestion.answered = true;
 
-            io.emit("polling-results", currentQuestion.results);
-        }
-    });
-
-    socket.on("student-set-name", ({name}) => {
-        const student = {
-            name,
-            socketId: socket.id,
-            voted: false
-        }
-
+      const student = connectedStudents.get(socket.id);
+      if (student) {
+        student.voted = true;
         connectedStudents.set(socket.id, student);
-        console.log(`Student ${name} connected`);
+        io.emit("student-vote-validation", [...connectedStudents.values()]);
+      }
 
-        io.emit("student-connected", Array.from(connectedStudents.values()));
-    });
+      io.emit("new-question", currentQuestion);
 
-    socket.on("disconnect", () => {
-        console.log("User disconnected");
-        connectedStudents.get(socket.id);
-        connectedStudents.delete(socket.id);
+      io.emit("polling-results", currentQuestion.results);
+    }
+  });
 
-        io.emit("student-disconnected", Array.from(connectedStudents.values()))
-    })
-})
+  socket.on("student-set-name", ({ name }) => {
+    const student = {
+      name,
+      socketId: socket.id,
+      voted: false,
+    };
+
+    connectedStudents.set(socket.id, student);
+    console.log(`Student ${name} connected`);
+
+    io.emit("student-connected", Array.from(connectedStudents.values()));
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+
+    connectedStudents.get(socket.id);
+    connectedStudents.delete(socket.id);
+
+    io.emit("student-disconnected", Array.from(connectedStudents.values()));
+  });
+});
