@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import PollingResult from "./PollingResult";
 import { Button } from "react-bootstrap";
@@ -40,19 +39,19 @@ const Teacher = ({ socket }) => {
     <div
       className="w-[60%] h-[80vh] text-white"
     >
-      <h1>Teacher Interface</h1>
+      <h1 className="text-3xl font-bold mb-5">Teacher Interface</h1>
       {questionPublished ? (
         <>
           <PollingResult socket={socket} />
-          <Button variant="primary" onClick={askAnotherQuestion}>
-            Ask Another Question?
+          <Button className="bg-green-600 rounded-lg h-10 w-1/4 font-semibold" variant="primary" onClick={askAnotherQuestion}>
+            Ask Another Question ?
           </Button>
         </>
       ) : (
         <div
          className="flex flex-col gap-y-4"
         >
-          <label>Enter Question and Options</label>
+          <label className="text">Enter Question and Options</label>
           <textarea
             type="text"
             value={question}
@@ -69,18 +68,18 @@ const Teacher = ({ socket }) => {
                 value={option}
                 onChange={(e) => updateOption(index, e.target.value)}
                 placeholder={`Enter Option number ${index + 1}`}
-                className="w-[35%] h-8 p-2 border border-[#0dcaf0] rounded-md bg-[#2a444a] outline-none text-white"
+                className="w-[35%] h-11 p-3 border border-[#0dcaf0] rounded-md bg-[#2a444a] outline-none text-white"
               />
             </div>
           ))}
           <div
             className="flex justify-between"
           >
-            <Button variant="outline-info" onClick={addOption}>
+            <Button className="bg-green-600 rounded-lg h-10 w-1/4 font-semibold " variant="outline-info" onClick={addOption}>
               Add another option +
             </Button>
-            <Button variant="primary" onClick={askQuestion}>
-              Ask Question -&gt;
+            <Button className="bg-blue-600 rounded-lg h-10 w-1/4 font-semibold " variant="primary" onClick={askQuestion}>
+              Ask Question ;
             </Button>
           </div>
         </div>

@@ -1,4 +1,3 @@
-
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -31,6 +30,7 @@ io.on("connection", (socket) => {
       optionsFrequency: {},
       answered: false,
       results: {},
+      
     };
 
     question.options.forEach((option) => {

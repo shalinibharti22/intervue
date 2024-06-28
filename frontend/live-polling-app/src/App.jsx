@@ -20,21 +20,21 @@ const App = () => {
     >
       {isTeacher === null ? (
         <div
-          className="flex flex-col justify-center items-center w-80"
+          className="flex flex-col justify-center items-center w-full"
         >
-          <h1>Select what type of user you are?</h1>
+          <h1 className="text-4xl font-bold">Select what type of user you are?</h1>
           <div
-            className="flex justify-between w-1/2 mx-24 gap-x-12"
+            className="flex justify-between w-1/2  p-2 mt-10"
           >
             <button
               onClick={() => handleRoleSelection("teacher")}
-              className="parentAndStudentButton"
+              className="parentAndStudentButton font-bold bg-blue-50 text-black h-10 w-1/3"
             >
               I am a Teacher
             </button>
             <button
               onClick={() => handleRoleSelection("student")}
-              className="parentAndStudentButton"
+              className="parentAndStudentButton font-bold  bg-blue-50 text-black h-10 w-1/3 "
             >
               I am a Student
             </button>

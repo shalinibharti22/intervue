@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, ProgressBar } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { ProgressBar, Button } from "react-bootstrap";
 import tower from "../assets/tower-icon.png";
 
 import { getVariant } from "../utils/util";
@@ -63,29 +64,30 @@ const Student = ({ socket }) => {
 
   return (
     <div
-     className="flex justify-center w-full h-[80vh] p-40"
+     className="flex justify-center w-full h-[100] p-40"
     >
       {showQuestion && name ? (
         <div
           className="w-full border border-[#6edff6] bg-[#134652]"
         >
-          <h1 className="text-center">Welcome, {name}</h1>
+          <h1 className="text-center text-3xl font-bold">Welcome, {name}</h1>
           {currentQuestion ? (
             currentQuestion.answered == false || votingValidation == false ? (
               <div
                 className="gap-y-4 gap-x-4 border-t border-[#6edff6] ml-0 md:ml-4 p-12"
               >
-                <h2>Question: {currentQuestion.question}</h2>
+                <h2 className="text-xl font-bold ">Question: {currentQuestion.question}</h2>
                 {currentQuestion.options.map((option, index) => (
                   <div
                     key={index}
-                    className={`flex ${selectedOption === option ? 'border-2 border-green-500' : 'border border-[#6edff6]'} justify-between my-4 h-6 p-5 cursor-pointer items-center rounded-md`}
+                    className={`flex hover:bg-gray-300 hover:text-black ${selectedOption === option ? 'border-2 border-green-500' : 'border border-[#6edff6]'} justify-between my-4 h-6 p-4 cursor-pointer items-center rounded-md`}
                     onClick={() => setSelectedOption(option)}
                   >
                     {option}
                   </div>
                 ))}
                 <Button
+                  className="h-10 bg-green-600 w-1/5 rounded-lg font-semibold"
                   variant="primary"
                   onClick={handlePoling}
                   disabled={!selectedOption}
@@ -98,7 +100,7 @@ const Student = ({ socket }) => {
                 className="mt-12 mb-12 border border-[#6edff6] bg-[#134652]"
               >
                 <h2
-                  className="text-center items-center"
+                  className="text-center items-center font-bold text-xl flex justify-center m-3"
                 >
                   <img
                     src={tower}
@@ -122,9 +124,9 @@ const Student = ({ socket }) => {
                             now={
                               parseInt(currentQuestion.results[option]) ?? "0"
                             }
-                            label={`${option}              ${parseInt(
+                            label={<span className="text-xl text-black font-semibold">{option}              {parseInt(
                               currentQuestion.results[option]
-                            )}%`}
+                            )}%</span>}
                             variant={getVariant(
                               parseInt(currentQuestion.results[option])
                             )}
@@ -141,14 +143,14 @@ const Student = ({ socket }) => {
               </div>
             )
           ) : (
-            <h1>Waiting for question...</h1>
+            <h1 className="item-center justify-center flex font-bold text-xl m-20">Waiting for question...</h1>
           )}
         </div>
       ) : (
         <div
           className="flex w-full justify-center flex-col items-center gap-y-4"
         >
-          <h2>Enter your name to participate in the contest</h2>
+          <h2 className="text-2xl font-bold">Enter your name to participate in the contest</h2>
           <input
             type="text"
             value={name}
@@ -157,7 +159,7 @@ const Student = ({ socket }) => {
             required
             className="w-[45%] h-10 p-2.5 border border-[#0dcaf0] rounded-md bg-[#2a444a] outline-none text-white"
           />
-          <Button variant="info" size="lg" onClick={handleSubmit}>
+          <Button className="bg-blue-600 h-10 w-1/5 rounded-lg font-semibold" variant="info" size="lg" onClick={handleSubmit}>
             Submit
           </Button>
         </div>

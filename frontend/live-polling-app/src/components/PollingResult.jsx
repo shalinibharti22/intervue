@@ -22,7 +22,7 @@ const PollingResult = ({ socket }) => {
     <div
       className="border border-[#6edff6] bg-[#134652] mb-12"
     >
-      <h2 className="text-center items-center"
+      <h2 className="text-center flex justify-center font-bold text-3xl items-center"
       >
         <img
           src={tower}
@@ -39,13 +39,13 @@ const PollingResult = ({ socket }) => {
         {currentQuestion &&
           Object.entries(currentQuestion.optionsFrequency).map(([option]) => (
             <div
-              className="m-4"
+              className="m-4 "
             >
               <ProgressBar
                 now={parseInt(currentQuestion.results[option] ?? 0) ?? "0"}
-                label={`${option}              ${parseInt(
+                label={<span className="text-xl text-black font-semibold">{option}              {parseInt(
                   currentQuestion.results[option]
-                )}%`}
+                )}%</span>}
                 variant={getVariant(
                   parseInt(currentQuestion.results[option] ?? 0)
                 )}
