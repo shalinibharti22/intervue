@@ -10,7 +10,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://live-polling-app-frontend.vercel.app/",
+    origin: "http://localhost:3001",
     methods: ["GET", "POST"],
   },
 });
