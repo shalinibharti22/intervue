@@ -8,7 +8,7 @@ const path = require("path");
 
 app.use(cors());
 //------------------------------------------- Deployment ----------------------------
-const __dirname1 = path.resolve(__dirname, ".", "dist");
+const __dirname1 = path.resolve(__dirname, "dist");
 if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => {
     app.use(express.static(__dirname1));
