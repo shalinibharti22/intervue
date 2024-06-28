@@ -3,8 +3,21 @@ const app = express();
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const dotenv = require("dotenv");
+const path = require("path");
 
 app.use(cors());
+//------------------------------------------- Deployment ----------------------------
+const __dirname1 = path.resolve(__dirname, ".", "dist");
+if (process.env.NODE_ENV === "production") {
+  app.get("*", (req, res) => {
+    app.use(express.static(__dirname1));
+    const indexfile = path.join(__dirname, "dist", "index.html");
+    return res.sendFile(indexfile);
+  });
+}
+
+//------------------------------------------- Deployment ----------------------------
 
 const server = http.createServer(app);
 
@@ -42,18 +55,21 @@ io.on("connection", (socket) => {
     io.emit("new-question", question);
 
     setTimeout(() => {
-        if (!currentQuestion.answered) {
-          const totalResponses = Object.values(currentQuestion.optionsFrequency).reduce((acc, ans) => acc + ans, 0);
-  
-          Object.keys(currentQuestion.optionsFrequency).forEach((option) => {
-            const percentage = (currentQuestion.optionsFrequency[option] / totalResponses) * 100;
-            currentQuestion.results[option] = percentage;
-          });
-  
-          currentQuestion.answered = true;
-          io.emit("polling-results", currentQuestion.results);
-        }
-      }, questionData.timer * 1000); // Convert seconds to milliseconds
+      if (!currentQuestion.answered) {
+        const totalResponses = Object.values(
+          currentQuestion.optionsFrequency
+        ).reduce((acc, ans) => acc + ans, 0);
+
+        Object.keys(currentQuestion.optionsFrequency).forEach((option) => {
+          const percentage =
+            (currentQuestion.optionsFrequency[option] / totalResponses) * 100;
+          currentQuestion.results[option] = percentage;
+        });
+
+        currentQuestion.answered = true;
+        io.emit("polling-results", currentQuestion.results);
+      }
+    }, questionData.timer * 1000); // Convert seconds to milliseconds
   });
 
   socket.on("handle-polling", ({ option }) => {
