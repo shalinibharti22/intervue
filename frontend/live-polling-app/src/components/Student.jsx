@@ -26,6 +26,10 @@ const Student = ({ socket }) => {
       setCurrentQuestion(question);
       setShowQuestion(true);
       setSelectedOption("");
+
+      setTimeout(() => {
+        setShowQuestion(false);
+      }, question.timer * 1000); // Convert seconds to milliseconds
     };
 
     const handleStudentVoteValidation = (connectedStudents) => {

@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
       optionsFrequency: {},
       answered: false,
       results: {},
-      
+      timer: questionData.timer, // Add timer to the question object
     };
 
     question.options.forEach((option) => {
@@ -40,6 +40,20 @@ io.on("connection", (socket) => {
     currentQuestion = question;
 
     io.emit("new-question", question);
+
+    setTimeout(() => {
+        if (!currentQuestion.answered) {
+          const totalResponses = Object.values(currentQuestion.optionsFrequency).reduce((acc, ans) => acc + ans, 0);
+  
+          Object.keys(currentQuestion.optionsFrequency).forEach((option) => {
+            const percentage = (currentQuestion.optionsFrequency[option] / totalResponses) * 100;
+            currentQuestion.results[option] = percentage;
+          });
+  
+          currentQuestion.answered = true;
+          io.emit("polling-results", currentQuestion.results);
+        }
+      }, questionData.timer * 1000); // Convert seconds to milliseconds
   });
 
   socket.on("handle-polling", ({ option }) => {

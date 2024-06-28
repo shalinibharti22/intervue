@@ -6,11 +6,13 @@ const Teacher = ({ socket }) => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([""]);
   const [questionPublished, setQuestionPublished] = useState(false);
+  const [timer, setTimer] = useState(60); // Default timer value
 
   const askQuestion = () => {
     const questionData = {
       question,
       options: options.filter((option) => option.trim() !== ""),
+      timer,
     };
 
     if (socket && question && questionData.options.length) {
@@ -33,6 +35,7 @@ const Teacher = ({ socket }) => {
     setQuestionPublished(false);
     setQuestion("");
     setOptions([""]);
+    setTimer(60)
   };
 
   return (
@@ -78,6 +81,7 @@ const Teacher = ({ socket }) => {
             <Button className="bg-green-600 rounded-lg h-10 w-1/4 font-semibold " variant="outline-info" onClick={addOption}>
               Add another option +
             </Button>
+            <input className="text-black" type="number" value={timer} onChange={(e) => setTimer(e.target.value)} />
             <Button className="bg-blue-600 rounded-lg h-10 w-1/4 font-semibold " variant="primary" onClick={askQuestion}>
               Ask Question ;
             </Button>
