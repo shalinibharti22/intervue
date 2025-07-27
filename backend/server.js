@@ -6,7 +6,18 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 
-app.use(cors());
+const allowedOrigins = [
+  'https://live-polling-app.onrender.com',
+  'http://localhost:5173'
+];
+
+app.use(cors({
+  origin: [
+    'https://live-polling-app.onrender.com',
+    'http://localhost:5173'
+  ],
+  credentials: true
+}));
 //------------------------------------------- Deployment ----------------------------
 const __dirname1 = path.resolve(__dirname, "dist");
 if (process.env.NODE_ENV === "production") {
@@ -21,9 +32,12 @@ if (process.env.NODE_ENV === "production") {
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
+const io = require('socket.io')(server, {
   cors: {
-    origin: "https://live-polling-app.onrender.com/",
+    origin: [
+      'https://live-polling-app.onrender.com',
+      'http://localhost:5173'
+    ],
     methods: ["GET", "POST"],
   },
 });

@@ -4,9 +4,7 @@
 
 The Live Polling Application is a real-time polling system designed for classroom or event settings. It allows teachers to create and publish polls, and students to participate and view results in real-time. The application is built using React for the frontend, and Node.js with Express and Socket.io for the backend, ensuring a responsive and interactive experience.
 
-## Demo
 
-Watch the [video demonstration](https://drive.google.com/file/d/1_p12dGJwolYJzl4ts1Z6-hMcdfxi1CKq/view?usp=sharing) to see how the Live Polling Application works.
 
 ## Features
 
