@@ -8,7 +8,8 @@ const path = require("path");
 
 const allowedOrigins = [
   'https://live-polling-app.onrender.com',
-  'http://localhost:5173'
+  'http://localhost:5173',
+  'https://intervue-5.onrender.com'
 ];
 
 app.use(cors({
@@ -140,5 +141,5 @@ io.on("connection", (socket) => {
 
     io.emit("student-disconnected", Array.from(connectedStudents.values()));
   });
-  
+
 });
